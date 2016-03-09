@@ -1,0 +1,18 @@
+#!/usr/bin/python2
+#Original Author: Zane J Cersovsky
+#Original Date: Mar 8 2016
+#Last Modified By: Zane J Cersovsky
+#Last Modified On: Mar 8 2016
+import threading
+import time
+class SensorThread(threading.Thread):
+	def __init__(self, sensorObj, shutdownEvent):
+		self.reading = (None, time.time())
+		self.sensor = sensorObj
+		self.shutdownEvent = shutdownEvent
+	def run(self):
+		while not shutdownEvent.is_set():
+			if (time.time()-self.reading[1]) > 0.5:
+				self.reading = (self.sensor.getReading(), time.time())
+			else:
+				time.sleep(0.1)
