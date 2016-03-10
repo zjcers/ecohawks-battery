@@ -4,8 +4,8 @@
 #Original Date: Mar 7 2016
 #Last Modified By: Zane J Cersovsky
 #Last Modified On: Mar 7 2016
-import smbus
 import sys
+import smbus
 import sensor
 import i2cutil
 class CurrentSensor(sensor.Sensor):

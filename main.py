@@ -3,8 +3,25 @@
 #Original Date: Mar 8 2016
 #Last Modified By: Zane J Cersovsky
 #Last Modified On: Mar 8 2016
-TESTING=True
-LOCAL_LUX = True
+
+#import python standard modules
+import sys
+import threading
+import os
+#set variables
+try:
+	TESTING = bool(os.environ["PB_TESTING"])
+except:
+	TESTING = False
+try:
+	LOCAL_LUX = bool(os.environ["PB_LOCAL_LUX"])
+except:
+	LOCAL_LUX = False
+try:
+	CONFIG_FILE = bool(os.environ["PB_CONFIG_FILE"])
+except:
+	CONFIG_FILE = "default.conf"
+#import custom modules
 if TESTING:
 	import dummyluxsensor as luxsensor
 	import dummyvoltagesensor as voltagesensor
@@ -20,8 +37,6 @@ else:
 	import relay
 import sensorthread
 import config
-import threading
-import sys
 class BatteryManager():
 	def __init__(self, config):
 		self.shutdownEvent = threading.Event()
@@ -41,9 +56,9 @@ class BatteryManager():
 	def returnReadings(self):
 		return self.currentInThread.reading, self.currentOutThread.reading, self.voltageThread.reading
 if __name__ == "__main__":
-	if len(sys.argv) == 2:
-		cfg = config.config(sys.argv[1])
-	else:
+	try:
+		cfg = config.config(CONFIG_FILE)
+	except:
 		cfg = config.config()
 	bm = BatteryManager(cfg)
 	bm.startThreads()
