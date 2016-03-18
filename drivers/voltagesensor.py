@@ -16,7 +16,7 @@ class VoltageSensor(abstractsensor.Sensor):
 		self.addr = addr
 		self.bus = smbus.SMBus(bus)
 	def getReading(self):
-		return (i2cutil.reverse_word(self.bus.read_word_data(self.addr, 0x02))/66536.0)*32
+		return (i2cutil.reverse_word(self.bus.read_word_data(self.addr, 0x02))>>3)*0.004
 if __name__ == "__main__":
 	if len(sys.argv) == 1:
 		v = VoltageSensor()

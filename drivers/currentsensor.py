@@ -89,7 +89,7 @@ class CurrentSensor(abstractsensor.Sensor):
 # ===========================================================================
 	def __init__(self, bus=1, addr=0x40, shuntCurrent=2.0):
 		self.logger = logging.getLogger("PB.drivers.currentsensor.local")
-		self.logger.info("Starting with parameters bus=%i, addr=%x, shunt=%f",bus,addr,shunt)
+		self.logger.info("Starting with parameters bus=%i, addr=%x, shunt=%f",bus,addr,shuntCurrent)
 		self.addr = addr
 		self.bus = smbus.SMBus(bus)
 		self.shuntCurrent = shuntCurrent

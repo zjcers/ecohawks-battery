@@ -3,3 +3,4 @@
 *.sqlite
 *.gch
 luxsensor/src/wifi_config.h
+*.conf
