@@ -5,9 +5,11 @@
 #Last Modified On: Mar 10 2016
 import sys
 import os
+import logging
 import pb_exceptions
 class config(dict):
 	def __init__(self, fileName):
+		self.logger = logging.getLogger("PB.config")
 		self.fileName = fileName
 		if "PB_CONFIG_KEYS" in os.environ:
 			self.loadRequiredKeys(os.environ["PB_CONFIG_KEYS"])
@@ -15,6 +17,7 @@ class config(dict):
 			self.loadRequiredKeys("conf/keys")
 		self.loadConfig()
 	def loadRequiredKeys(self, fileName):
+		self.logger.debug("Loading keys file %s", fileName)
 		f = open(fileName, 'r')
 		self.requiredKeys = {}
 		try:
@@ -26,6 +29,7 @@ class config(dict):
 		except:
 			raise pb_exceptions.ConfigFileException("Error parsing keys file")
 	def loadConfig(self):
+		self.logger.info("Loading configuration file: %s", self.fileName)
 		f = open(self.fileName,'r')
 		try:
 			for line in f:

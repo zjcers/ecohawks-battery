@@ -7,3 +7,4 @@
 #nop
 
 #This file is just a placeholder that allows the global configuration to be shared among modules
+cfg = {}
