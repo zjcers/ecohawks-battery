@@ -23,11 +23,15 @@ voltageSensor=str
 voltageBus=int
 voltageAddr=hex
 
+#relay
+relay=str
+relayPort=str
+
 #Other modules
 batteryManager=str
-batteryController=str
 actor=str
 
 #Misc.
 #modules is a comma-delimited list
+debug=bool
 modules=list
