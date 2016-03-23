@@ -1,0 +1,33 @@
+#Default listing of configuration keys and corresponding types
+#Currently does not support spaces and other things
+
+#CurrentIn Sensor
+currentInSensor=str
+currentInBus=int
+currentInAddr=hex
+currentInShunt=float
+
+#currentOut Sensor
+currentOutSensor=str
+currentOutBus=int
+currentOutAddr=hex
+currentOutShunt=float
+
+#luxSensor
+luxSensor=str
+luxSensorBus=int
+luxSensorAddr=str
+
+#voltageSensor
+voltageSensor=str
+voltageBus=int
+voltageAddr=hex
+
+#Other modules
+batteryManager=str
+batteryController=str
+actor=str
+
+#Misc.
+#modules is a comma-delimited list
+modules=list

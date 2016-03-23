@@ -44,7 +44,8 @@ class config(dict):
 			"int": int,
 			"bool": bool,
 			"float": float,
-			"hex": self.dehex
+			"hex": self.dehex,
+			"list": self.delist
 			}[typeStr]
 		except:
 			return str
