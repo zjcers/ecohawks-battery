@@ -2,15 +2,18 @@
 #Original Author: Zane J Cersovsky
 #Original Date: Mar 8 2016
 #Last Modified By: Zane J Cersovsky
-#Last Modified On: Mar 8 2016
+#Last Modified On: Mar 23 2016
 import random
 import sys
-import sensor
-class LuxSensor(sensor.Sensor):
+import logging
+#import sensor abstract
+import abssensor
+class LuxSensor(abssensor.Sensor):
 	def __init__(self, bus=1, addr=0x39 normValue=20000, delta=2000,**kwargs):
+		self.logger = logging.getLogger("PB.drivers.luxsensor.dummy")
 		self.normValue = normValue
 		self.delta = delta
-		print "Dummy LuxSensor with parameters bus=",bus," addr=",addr," normValue=",normValue," delta=",delta
+	 	self.logger.info("Starting with parameters bus=%i, addr=%x normValue=%i delta=%i",bus,addr,normValue,delta)
 	def getReading(self):
 		return max(self.normValue+self.getSign()*random.random()*self.delta, 0)
 	def getSign(self):

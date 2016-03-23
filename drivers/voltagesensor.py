@@ -2,13 +2,17 @@
 #Original Author: Zane J Cersovsky
 #Original Date: Mar 6 2016
 #Last Modified By: Zane J Cersovsky
-#Last Modified On: Mar 7 2016
+#Last Modified On: Mar 23 2016
 import smbus
 import sys
-import sensor
+import logging
 import i2cutil
-class VoltageSensor(sensor.Sensor):
+#import sensor abstract
+import abssensor
+class VoltageSensor(abssensor.Sensor):
 	def __init__(self, bus=1, addr=0x40):
+		self.logger = logging.getLogger("PB.drivers.voltagesensor.local")
+		self.logger.info("Starting with parameters: bus=%i, addr=%x",bus,addr)
 		self.addr = addr
 		self.bus = smbus.SMBus(bus)
 	def getReading(self):

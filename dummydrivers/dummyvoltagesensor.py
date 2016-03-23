@@ -3,15 +3,18 @@
 #Original Author: Zane J Cersovsky
 #Original Date: Mar 8 2016
 #Last Modified By: Zane J Cersovsky
-#Last Modified On: Mar 78 2016
+#Last Modified On: Mar 23 2016
 import sys
 import random
-import sensor
-class VoltageSensor(sensor.Sensor):
+import logging
+#import sensor abstract
+import abssensor
+class VoltageSensor(abssensor.Sensor):
 	def __init__(self, bus=1, addr=0x40):
+		self.logger = logging.getLogger("PB.drivers.voltagesensor.dummy")
 		self.addr = addr
 		self.bus = bus
-		print "Dummy voltage sensor starting with parameters: bus=",bus,", addr=",hex(addr)
+		self.logger.info("Starting with parameters: bus=%i, addr=%x",self.bus,self.addr)
 	#returns the current across the shunt
 	def getReading(self):
 		return 5.0-(random.random()*0.5)

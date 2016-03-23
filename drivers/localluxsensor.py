@@ -7,15 +7,14 @@ import time
 import smbus
 import sensor
 class LuxSensor(sensor.Sensor):
-	def __init__(self,bus=1,addr=0x39,debug=False,**kwargs):
+	def __init__(self,bus=1,addr="0x39",debug=False,**kwargs):
 		self.addr = addr
 		self.debug = debug
 		self.bus = smbus.SMBus(bus)
 	#this method may hang for a while as the sensor gets recallibrated, run in a thread
 	def getReading(self):
 		while True:
-			lowADC = self.readLowerADC()
-			highADC = self.readHigherADC()		
+			lowADC,highADC = self.readADC()
 			gain,integ = self.getTiming()
 			if lowADC == 65535 or highADC == 65535:
 				if self.debug:
@@ -73,25 +72,11 @@ class LuxSensor(sensor.Sensor):
 		timeReg = self.bus.read_byte(self.addr)
 		gain = (timeReg & 0b10000) != 0
 		integ = (timeReg &0b11)
-		return gain,integ
-	def readLowerADC(self):
-		self.setReg(0x0C)
-		lowByte = self.bus.read_byte(self.addr)
-		self.setReg(0x0D)
-		highByte = self.bus.read_byte(self.addr)
-		ret = (highByte << 8)+lowByte
-		if self.debug:
-			print ret
-		return ret
-	def readHigherADC(self):
-		self.setReg(0x0E)
-		lowByte = self.bus.read_byte(self.addr)
-		self.setReg(0x0F)
-		highByte = self.bus.read_byte(self.addr)
-		ret = (highByte << 8)+lowByte
-		if self.debug:
-			return ret
-
+		return gain, integ
+	def readADC(self):
+		ch0 = i2cutil.reverse_word(self.bus.read_word(self.addr, 0xAC)) #As per DS pg 19
+		ch1 = i2cutil.reverse_word(self.bus.read_word(self.addr, 0xAE))
+		return ch0, ch1
 if __name__ == "__main__":
 	l = LocalLuxSensor(debug=True)
 	print "Current Lux: ",l.getReading()

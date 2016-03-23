@@ -3,16 +3,19 @@
 #Original Author: Zane J Cersovsky
 #Original Date: Mar 8 2016
 #Last Modified By: Zane J Cersovsky
-#Last Modified On: Mar 78 2016
+#Last Modified On: Mar 23 2016
 import sys
 import random
-import sensor
-class CurrentSensor(sensor.Sensor):
+import logging
+#import sensor abstract
+import abssensor
+class CurrentSensor(abssensor.Sensor):
 	def __init__(self, bus=1, addr=0x40, shunt=0.1):
+		self.logger = logging.getLogger("PB.drivers.currentsensor.dummy")
 		self.addr = addr
 		self.bus = bus
 		self.shunt = shunt
-		print "Dummy current sensor starting with parameters: bus=",bus,", addr=",hex(addr),", shunt=",shunt
+		self.logger.info("Starting with parameters: bus=%i, addr=%x, shunt=%f",self.bus,self.addr,self.shunt)
 	#returns the current across the shunt
 	def getReading(self):
 		return 5.0-(random.random()*0.5)
