@@ -5,22 +5,31 @@
 #Last Modified On: Mar 23 2016
 import threading
 import logging
+import cfg
 import sensorthread
+#drivers (aliased by imports)
+import currentInSensor
+import currentOutSensor
+import voltageSensor
+import luxSensor
+import relay
 #starts threads for: currentInSensor, currentOutSensor, voltageSensor, LuxSensor
 class BatteryManager():
 	def __init__(self):
 		self.logger = logging.getLogger("PB.batterymanager.basic")
 		self.logger.info("Initializing...")
 		self.shutdownEvent = threading.Event()
-		self.currentInS = currentsensor.CurrentSensor(bus=cfg.cfg["currentInBus"], addr=cfg.cfg["currentInAddr"], shunt=cfg.cfg["currentInShunt"])
+		self.currentInS = currentInSensor.CurrentSensor(bus=cfg.cfg["currentInBus"], addr=cfg.cfg["currentInAddr"], shunt=cfg.cfg["currentInShunt"])
 		self.currentInThread = sensorthread.SensorThread(self.currentInS, self.shutdownEvent)
-		self.currentOutS = currentsensor.CurrentSensor(bus=cfg.cfg["CurrentOutBus"], addr=cfg.cfg["currentOutAddr"], shunt=cfg.cfg["currentOutShunt"])
+		self.currentOutS = currentOutSensor.CurrentSensor(bus=cfg.cfg["currentOutBus"], addr=cfg.cfg["currentOutAddr"], shunt=cfg.cfg["currentOutShunt"])
 		self.currentOutThread = sensorthread.SensorThread(self.currentOutS, self.shutdownEvent)
-		self.voltageS = voltagesensor.VoltageSensor(bus=cfg.cfg["bus"], addr=cfg.cfg["voltageAddr"])
+		self.voltageS = voltageSensor.VoltageSensor(bus=cfg.cfg["voltageBus"], addr=cfg.cfg["voltageAddr"])
 		self.voltageThread = sensorthread.SensorThread(self.voltageS, self.shutdownEvent)
-		self.luxS = luxsensor.LuxSensor(bus=cfg.cfg["bus"], addr=cfg.cfg["luxAddr"])
+		self.luxS = luxSensor.LuxSensor(bus=cfg.cfg["luxSensorBus"], addr=cfg.cfg["luxSensorAddr"])
 		self.luxThread = sensorthread.SensorThread(self.luxS, self.shutdownEvent)
 		self.relay = relay.Relay(port=cfg.cfg["relayPort"])
+	def getReadings(self):
+		return self.currentInThread.reading, self.currentOutThread.reading, self.voltageThread.reading, self.luxThread.reading
 	def startThreads(self):
 		self.logger.info("Starting threads")
 		self.currentInThread.start()
