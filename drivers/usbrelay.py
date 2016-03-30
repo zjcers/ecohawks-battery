@@ -8,15 +8,17 @@ import sys
 #import pySerial
 import serial
 #import abstract relay
-import absrelay
-class Relay(absrelay.Relay):
+import abstractrelay
+class Relay(abstractrelay.Relay):
 	def __init__(self, port="/dev/ttyUSB0"):
 		self.s = serial.Serial(port="/dev/ttyUSB0")
+		self.status = [False, False, False, False]
 	def sendCmd(self, relay, status):
 		assert type(relay) == int
 		assert relay >= 1
 		assert relay <= 4
 		assert type(status) == bool
+		self.status[relay-1] = status
 		s.write(bytearray((255,relay,int(status))))
 		s.flush()
 	def enable(self, relay):

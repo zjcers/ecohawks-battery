@@ -8,8 +8,8 @@ import sys
 import smbus
 import i2cutil
 #import sensor abstract
-import abssensor
-class CurrentSensor(abssensor.Sensor):
+import abstractsensor
+class CurrentSensor(abstractsensor.Sensor):
 	def __init__(self, bus=1, addr=0x40, shunt=0.1):
 		self.logger = logging.getLogger("PB.drivers.currentsensor.local")
 		self.logger.info("Starting with parameters bus=%i, addr=%x, shunt=%f",bus,addr,shunt)

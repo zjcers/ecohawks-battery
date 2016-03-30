@@ -5,14 +5,19 @@
 #Last Modified On: Mar 23 2016
 import logging
 #import relay abstract
-import relay
-class Relay(relay.Relay):
-    def __init__(self):
+import abstractrelay
+class Relay(abstractrelay.Relay):
+    def __init__(self, **kwargs):
         self.logger = logging.getLogger("PB.drivers.relay.dummy")
         self.logger.info("Starting")
+        self.status = [False, False, False, False]
     def enable(self, num):
         assert type(num) == int
+        assert num >= 1 and num <= 4
         self.logger.info("Enabling relay #%i",num)
+        self.status[num-1] = True
     def disable(self, num):
         assert type(num) == int
+        assert num >= 1 and num <= 4
         self.logger.info("Disabling relay #%i",num)
+        self.status[num-1] = False

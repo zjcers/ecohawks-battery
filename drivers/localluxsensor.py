@@ -2,14 +2,16 @@
 #Original Author: Zane J Cersovsky
 #Original Date: Mar 7 2016
 #Last Modified By: Zane J Cersovsky
-#Last Modified On: Mar 7 2016
+#Last Modified On: Mar 23 2016
 import time
 import smbus
-import sensor
-class LuxSensor(sensor.Sensor):
-	def __init__(self,bus=1,addr="0x39",debug=False,**kwargs):
+#import sensor abstract
+import abstractsensor
+class LuxSensor(abstractsensor.Sensor):
+	def __init__(self,bus=1,addr="0x39",**kwargs):
+		self.logger = logging.getLogger("PB.drivers.luxsensor.local")
+		self.logger.info("Starting with parameters bus=%i, addr=%x",bus,addr)
 		self.addr = addr
-		self.debug = debug
 		self.bus = smbus.SMBus(bus)
 	#this method may hang for a while as the sensor gets recallibrated, run in a thread
 	def getReading(self):
@@ -17,16 +19,14 @@ class LuxSensor(sensor.Sensor):
 			lowADC,highADC = self.readADC()
 			gain,integ = self.getTiming()
 			if lowADC == 65535 or highADC == 65535:
-				if self.debug:
-					print "Overexposed, reducing integration time"
+				self.logger.debug("Overexposed, reducing integration time")
 				if gain:
 					self.setTiming(False, integ)
 				elif integ > 0:
 					self.setTiming(False, integ-1)
 				time.sleep(0.4)
 			elif lowADC < 5 or highADC < 5:
-				if self.debug:
-					print "Underexposed, increasing integration time"
+				self.logger.debug("Underexposed, increasing integration time")
 				if not gain:
 					self.setTiming(True, integ)
 				elif integ < 2:
@@ -53,13 +53,11 @@ class LuxSensor(sensor.Sensor):
 	def enable(self):
 		self.setReg(0x00)
 		self.bus.write_byte(self.addr, 0b00000011)
-		if self.debug:
-			print "ctrl reg ",bin(self.bus.read_byte(self.addr))
+		self.logger.debug("ctrl reg %s",bin(self.bus.read_byte(self.addr)))
 	def disable(self):
 		self.setReg(0x00)
 		self.bus.write_byte(self.addr, 0b00000000)
-		if self.debug:
-			print "ctrl reg ",bin(self.bus.read_byte(self.addr))
+		self.logger.debug("ctrl reg %s",bin(self.bus.read_byte(self.addr)))
 	def setTiming(self, gain, integ):
 		assert type(gain) == bool
 		assert type(integ) == int
@@ -76,7 +74,8 @@ class LuxSensor(sensor.Sensor):
 	def readADC(self):
 		ch0 = i2cutil.reverse_word(self.bus.read_word(self.addr, 0xAC)) #As per DS pg 19
 		ch1 = i2cutil.reverse_word(self.bus.read_word(self.addr, 0xAE))
+		self.logger.debug("CH0 ADC Value: %i CH1 ADC Value: %i",ch0,ch1)
 		return ch0, ch1
 if __name__ == "__main__":
-	l = LocalLuxSensor(debug=True)
+	l = LocalLuxSensor()
 	print "Current Lux: ",l.getReading()

@@ -8,8 +8,8 @@ import sys
 import random
 import logging
 #import sensor abstract
-import abssensor
-class VoltageSensor(abssensor.Sensor):
+import abstractsensor
+class VoltageSensor(abstractsensor.Sensor):
 	def __init__(self, bus=1, addr=0x40):
 		self.logger = logging.getLogger("PB.drivers.voltagesensor.dummy")
 		self.addr = addr
