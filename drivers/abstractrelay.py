@@ -12,5 +12,5 @@ class Relay(object):
 	@abstractmethod
 	def enable(self, num):
 		pass
-    def disable(self, num):
-        pass
+	def disable(self, num):
+		pass
