@@ -5,29 +5,14 @@
 #Last Modified On: Mar 10 2016
 import sys
 import os
+import string
 import logging
 import pb_exceptions
 class config(dict):
 	def __init__(self, fileName):
 		self.logger = logging.getLogger("PB.config")
 		self.fileName = fileName
-		if "PB_CONFIG_KEYS" in os.environ:
-			self.loadRequiredKeys(os.environ["PB_CONFIG_KEYS"])
-		else:
-			self.loadRequiredKeys("conf/keys")
 		self.loadConfig()
-	def loadRequiredKeys(self, fileName):
-		self.logger.debug("Loading keys file %s", fileName)
-		f = open(fileName, 'r')
-		self.requiredKeys = {}
-		try:
-			for line in f:
-				if not (line.startswith('#') or len(line) <= 1):
-					line = line.rstrip('\n')
-					[key, value] = line.split('=')
-					self.requiredKeys[key] = self.resolveTypes(value)
-		except:
-			raise pb_exceptions.ConfigFileException("Error parsing keys file")
 	def loadConfig(self):
 		self.logger.info("Loading configuration file: %s", self.fileName)
 		f = open(self.fileName,'r')
@@ -36,27 +21,31 @@ class config(dict):
 				line = line.strip('\n')
 				if not (line.startswith('#') or line == ''):
 					[key, value] = line.split('=')
-					if key in self.requiredKeys.keys():
-						value = self.requiredKeys[key](value)
-						self[key] = value
+					self.logger.debug("Detecting %s as: %s", value, repr(self.detectType(value)(value)))
+					value = self.detectType(value)(value)
+					self[key] = value
 		except:
 			raise pb_exceptions.ConfigFileException("Error parsing config file")
-	def resolveTypes(self, typeStr):
-		try:
-			return {
-			"str": str,
-			"int": int,
-			"bool": bool,
-			"float": float,
-			"hex": self.dehex,
-			"list": self.delist
-			}[typeStr]
-		except:
+	def detectType(self, value):
+		if value.startswith("0x"):
+			return self.dehex
+		elif value[:1] in "0123456789":
+			if "." in value:
+				return float
+			else:
+				return int
+		elif value.upper() == "TRUE" or value.upper() == "FALSE":
+			return self.debool
+		elif ',' in value:
+			return self.delist
+		else:
 			return str
-	def dehex(self, num):
-		return int(num, 16)
-	def delist(self, inputString):
-		return inputString.split(',')
+	def dehex(self, value):
+		return int(value, 16)
+	def delist(self, value):
+		return value.split(',')
+	def debool(self, value):
+		return value.upper() == "TRUE"
 if __name__ == "__main__":
 	if len(sys.argv) == 2:
 		print "Loading configuration file: ",sys.argv[1]

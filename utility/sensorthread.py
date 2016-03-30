@@ -7,11 +7,12 @@ import threading
 import time
 class SensorThread(threading.Thread):
 	def __init__(self, sensorObj, shutdownEvent):
+		threading.Thread.__init__(self)
 		self.reading = (None, time.time())
 		self.sensor = sensorObj
 		self.shutdownEvent = shutdownEvent
 	def run(self):
-		while not shutdownEvent.is_set():
+		while not self.shutdownEvent.is_set():
 			if (time.time()-self.reading[1]) > 0.5:
 				self.reading = (self.sensor.getReading(), time.time())
 			else:
