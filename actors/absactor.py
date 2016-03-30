@@ -9,5 +9,8 @@ class Actor():
     def __init__(self, batteryManagerObj):
         pass
     @abstractmethod
-    def act(self):
+    def run(self):
+        pass
+    @abstractmethod
+    def checkConfig(self):
         pass
