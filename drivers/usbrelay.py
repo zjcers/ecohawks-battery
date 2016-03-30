@@ -22,6 +22,7 @@ class Relay(abstractrelay.Relay):
 		s.write(bytearray((255,relay,int(status))))
 		s.flush()
 	def enable(self, relay):
+		self.logger
 		self.sendCmd(relay, True)
 	def disable(self, relay):
 		self.sendCmd(relay, False)
