@@ -16,4 +16,4 @@ fi
 #shows python where all of the custom modules are
 export PYTHONPATH=$PYTHONPATH":dummydrivers:utility:drivers:batterymanagers:actors:sensorLoggers"
 #starts the project
-python -i main.py
+python main.py
