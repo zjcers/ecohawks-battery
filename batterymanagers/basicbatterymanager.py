@@ -29,7 +29,7 @@ class BatteryManager():
 		self.luxThread = sensorthread.SensorThread(self.luxS, self.shutdownEvent)
 		self.relay = relay.Relay(port=cfg.cfg["relayPort"])
 	def getReadings(self):
-		return self.currentInThread.reading, self.currentOutThread.reading, self.voltageThread.reading, self.luxThread.reading
+		return self.currentInThread.getReading(), self.currentOutThread.getReading(), self.voltageThread.getReading(), self.luxThread.getReading()
 	def startThreads(self):
 		self.logger.info("Starting threads")
 		self.currentInThread.start()
