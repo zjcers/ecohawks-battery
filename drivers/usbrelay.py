@@ -5,12 +5,15 @@
 #Last Modified On: Mar 23 2016
 #import needed STL modules
 import sys
+import logging
 #import pySerial
 import serial
 #import abstract relay
 import abstractrelay
 class Relay(abstractrelay.Relay):
 	def __init__(self, port="/dev/ttyUSB0"):
+		self.logger = logging.getLogger("PB.drivers.relay.usbrelay")
+		self.logger.info("starting on port: "+port)
 		self.s = serial.Serial(port="/dev/ttyUSB0")
 		self.status = [False, False, False, False]
 	def sendCmd(self, relay, status):
@@ -22,10 +25,15 @@ class Relay(abstractrelay.Relay):
 		s.write(bytearray((255,relay,int(status))))
 		s.flush()
 	def enable(self, relay):
-		self.logger
-		self.sendCmd(relay, True)
+        if not self.status[num-1]:
+            self.logger.info("Enabling relay #%i",num)
+            self.status[num-1] = True
+			self.sendCmd(relay, True)
 	def disable(self, relay):
-		self.sendCmd(relay, False)
+        if self.status[num-1]:
+            self.logger.info("Disabling relay #%i",num)
+            self.status[num-1] = False
+			self.sendCmd(relay, False)
 if __name__ == "__main__":
 	relay = Relay()
 	if len(sys.argv) == 3:

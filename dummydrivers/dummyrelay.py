@@ -14,10 +14,12 @@ class Relay(abstractrelay.Relay):
     def enable(self, num):
         assert type(num) == int
         assert num >= 1 and num <= 4
-        self.logger.info("Enabling relay #%i",num)
-        self.status[num-1] = True
+        if not self.status[num-1]:
+            self.logger.info("Enabling relay #%i",num)
+            self.status[num-1] = True
     def disable(self, num):
         assert type(num) == int
         assert num >= 1 and num <= 4
-        self.logger.info("Disabling relay #%i",num)
-        self.status[num-1] = False
+        if self.status[num-1]:
+            self.logger.info("Disabling relay #%i",num)
+            self.status[num-1] = False
