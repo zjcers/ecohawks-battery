@@ -27,7 +27,9 @@ class config(dict):
 		except:
 			raise pb_exceptions.ConfigFileException("Error parsing config file")
 	def detectType(self, value):
-		if value.startswith("0x"):
+		if value.startswith('"'):
+			return self.dequote
+		elif value.startswith("0x"):
 			return self.dehex
 		elif value[:1] in "0123456789":
 			if "." in value:
@@ -46,6 +48,8 @@ class config(dict):
 		return value.split(',')
 	def debool(self, value):
 		return value.upper() == "TRUE"
+	def dequote(self, value):
+		return value.strip('"')
 if __name__ == "__main__":
 	if len(sys.argv) == 2:
 		print "Loading configuration file: ",sys.argv[1]
