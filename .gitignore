@@ -1,3 +1,4 @@
 *.pyc
 *.csv
 *.sqlite
+luxsensor/src/wifi_config.h
