@@ -6,7 +6,7 @@
 import time
 import logging
 import cfg
-import logger
+import sensorlogger
 import batteryManager
 #import actor abstract
 import absactor
@@ -17,7 +17,7 @@ class Actor(absactor.Actor):
         self.checkConfig()
         self.batteryManagerObj = batteryManager.BatteryManager()
         self.batteryManagerObj.startThreads()
-        self.sensorLogger = logger.Logger()
+        self.sensorLogger = sensorlogger.Logger()
         self.keepRunning = True
     def run(self):
         try:
@@ -30,6 +30,8 @@ class Actor(absactor.Actor):
                 time.sleep(1)
         except KeyboardInterrupt:
             self.batteryManagerObj.shutdown()
+        self.sensorLogger.fileObj.flush()
+        self.sensorLogger.uploadFile(self.sensorLogger.logFileName)
     def checkConfig(self):
         for key in ["relay.charger","relay.output","action.lux.threshold","action.lux.high","action.lux.low","action.voltage.threshold","action.voltage.high","action.voltage.low"]:
             cfg.cfg["actor.basic."+key] #throw key exception if the key isn't found
@@ -44,9 +46,9 @@ class Actor(absactor.Actor):
         relayStatus = valTokens[2].lower() == 'on'
         relayName = '.'.join(valTokens[0:2])
         if valThresh == "high":
-            self.logger.info(name+" above threshold")
+            self.logger.debug(name+" above threshold")
         else:
-            self.logger.info(name+" below threshold")
+            self.logger.debug(name+" below threshold")
         self.changeRelay(relayName, relayStatus)
     def changeRelay(self, relayName, relayStatus):
         relayIndex = self.resolveRelayName(relayName)

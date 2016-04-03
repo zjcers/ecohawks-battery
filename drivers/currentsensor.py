@@ -6,6 +6,7 @@
 #Last Modified On: Mar 23 2016
 import sys
 import smbus
+import logging
 import i2cutil
 #import sensor abstract
 import abstractsensor

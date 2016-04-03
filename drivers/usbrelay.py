@@ -25,14 +25,14 @@ class Relay(abstractrelay.Relay):
 		s.write(bytearray((255,relay,int(status))))
 		s.flush()
 	def enable(self, relay):
-        if not self.status[num-1]:
-            self.logger.info("Enabling relay #%i",num)
-            self.status[num-1] = True
+        if not self.status[relay-1]:
+            self.logger.debug("Enabling relay #%i",num)
+            self.status[relay-1] = True
 			self.sendCmd(relay, True)
 	def disable(self, relay):
-        if self.status[num-1]:
-            self.logger.info("Disabling relay #%i",num)
-            self.status[num-1] = False
+        if self.status[relay-1]:
+            self.logger.debug("Disabling relay #%i",num)
+            self.status[relay-1] = False
 			self.sendCmd(relay, False)
 if __name__ == "__main__":
 	relay = Relay()
