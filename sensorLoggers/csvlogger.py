@@ -8,7 +8,9 @@ import abssensorlogger
 class Logger(abssensorlogger.Logger):
     def __init__(self):
         self.logger = logging.getLogger("PB.logger.csv")
-        self.fieldnames = ["time", "currentInReading","currentOutReading","voltageReading","luxReading","relayStatus"]
+        self.fieldnames = cfg.cfg["sensorlogger.fieldnames"]
+        self.interval = cfg.cfg["sensorlogger.interval"]
+        self.lastTime = 0
         self.switchFiles()
         if "sensorlogger.upload.connDetails" in cfg.cfg:
             self.connDetails = cfg.cfg["sensorlogger.upload.connDetails"]
@@ -22,11 +24,13 @@ class Logger(abssensorlogger.Logger):
         self.writtenLines = 0
     def recordEntry(self, entry):
         assert type(entry) == logentry.Entry
-        self.logger.debug("Writing %s", repr(entry))
-        self.writer.writerow(entry)
-        self.writtenLines += 1
-        self.fileObj.flush()
-        self.handleFiles()
+        if time.time()-self.lastTime > self.interval:
+            self.lastTime = time.time()
+            self.logger.debug("Writing %s", repr(entry))
+            self.writer.writerow(entry)
+            self.writtenLines += 1
+            self.fileObj.flush()
+            self.handleFiles()
     def handleFiles(self):
         if self.writtenLines == self.lines:
             self.logger.info("Line count reached, switching files")
