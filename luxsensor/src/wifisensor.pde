@@ -33,8 +33,8 @@ void initWifi () {
 #else
 void initWifi () {
   Serial.print("[wifi] creating ssid: ");
-  Serial.println(ssid);
-  WiFi.softAP(ssid);
+  Serial.println(AP);
+  WiFi.softAP(AP);
   Serial.println("[wifi] connected");
   Serial.print("[wifi] ip: ");
   Serial.println(WiFi.softAPIP());
