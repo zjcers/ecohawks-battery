@@ -22,17 +22,17 @@ class Relay(abstractrelay.Relay):
 		assert relay <= 4
 		assert type(status) == bool
 		self.status[relay-1] = status
-		s.write(bytearray((255,relay,int(status))))
-		s.flush()
+		self.s.write(bytearray((255,relay,int(status))))
+		self.s.flush()
 	def enable(self, relay):
-        if not self.status[relay-1]:
-            self.logger.debug("Enabling relay #%i",num)
-            self.status[relay-1] = True
+	        if not self.status[relay-1]:
+			self.logger.debug("Enabling relay #%i",relay)
+			self.status[relay-1] = True
 			self.sendCmd(relay, True)
 	def disable(self, relay):
-        if self.status[relay-1]:
-            self.logger.debug("Disabling relay #%i",num)
-            self.status[relay-1] = False
+		if self.status[relay-1]:
+			self.logger.debug("Disabling relay #%i",relay)
+			self.status[relay-1] = False
 			self.sendCmd(relay, False)
 if __name__ == "__main__":
 	relay = Relay()
