@@ -21,9 +21,9 @@ if __name__ == "__main__":
 	if len(sys.argv) == 1:
 		v = VoltageSensor()
 	elif len(sys.argv) == 2:
-		v = VoltageSensor(addr=sys.argv[1])
+		v = VoltageSensor(addr=int(sys.argv[1]))
 	elif len(sys.argv) == 3:
-		v = VoltageSensor(bus=sys.argv[1], addr=sys.argv[2])
+		v = VoltageSensor(bus=int(sys.argv[1]), addr=int(sys.argv[2],16))
 	else:
 		print "Invalid arguments"
 		exit(1)
