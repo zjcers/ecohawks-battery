@@ -14,7 +14,7 @@ import cfg
 #no error checking is done since the caller is responsible for checking prior to call
 importLogger = logging.getLogger("PB.imports")
 def importhelper(name, alias):
-    importLogger.debug("Loading %s as %s", name, alias)
-    sys.modules[alias] = __import__(name)
+	importLogger.debug("Loading %s as %s", name, alias)
+	sys.modules[alias] = __import__(name)
 for mod in cfg.cfg["modules"]:
-    importhelper(cfg.cfg[mod], mod)
+	importhelper(cfg.cfg[mod], mod)

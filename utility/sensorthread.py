@@ -21,11 +21,14 @@ class SensorThread(threading.Thread):
 		while not self.shutdownEvent.is_set():
 			if (time.time()-self.reading[1]) > 0.5:
 				self.reading = (self.sensor.getReading(), time.time())
-				self.buf.addElement(self.reading[0])
+				if self.useAvg:
+					self.buf.addElement(self.reading[0])
 			else:
 				time.sleep(0.1)
 	def getReading(self):
 		if self.useAvg:
 			return self.buf.average()
 		else:
+			if self.reading[0] == None:
+				return 0.0
 			return self.reading[0]

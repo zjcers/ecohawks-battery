@@ -5,12 +5,9 @@
 #Last Modified On: Mar 24 2016
 from abc import ABCMeta, abstractmethod
 class Actor():
-    @abstractmethod
-    def __init__(self, batteryManagerObj):
-        pass
-    @abstractmethod
-    def run(self):
-        pass
-    @abstractmethod
-    def checkConfig(self):
-        pass
+	@abstractmethod
+	def __init__(self, batteryManagerObj):
+		pass
+	@abstractmethod
+	def run(self):
+		pass
