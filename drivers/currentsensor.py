@@ -35,9 +35,11 @@ if __name__ == "__main__":
 	if len(sys.argv) == 1:
 		c = CurrentSensor()
 	elif len(sys.argv) == 2:
-		c = CurrentSensor(addr=sys.argv[1])
+		c = CurrentSensor(addr=int(sys.argv[1], 16))
 	elif len(sys.argv) == 3:
-		c = CurrentSensor(bus=sys.argv[1], addr=sys.argv[2])
+		c = CurrentSensor(bus=int(sys.argv[1]), addr=int(sys.argv[2],16))
+	elif len(sys.argv) == 4:
+		c = CurrentSensor(bus=int(sys.argv[1]), addr=int(sys.argv[2],16), shunt=float(sys.argv[3]))
 	else:
 		print "Invalid arguments"
 		exit(1)
