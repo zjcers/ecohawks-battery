@@ -8,6 +8,8 @@ import logging
 import cfg
 import sensorlogger
 import batteryManager
+import circularlist
+import logentry
 #import actor abstract
 import absactor
 class Actor(absactor.Actor):
@@ -18,22 +20,27 @@ class Actor(absactor.Actor):
 		self.batteryManagerObj = batteryManager.BatteryManager()
 		self.batteryManagerObj.startThreads()
 		self.sensorLogger = sensorlogger.Logger()
+		self.batteryCur = 0.0
+		self.currentBuf = circularlist.CircularList(3)
 		self.keepRunning = True
 	def run(self):
 		try:
 			while self.keepRunning:
 				currentIn, currentOut, voltage, lux = self.batteryManagerObj.getReadings()
 				relays = repr(self.batteryManagerObj.relay.status)
-				logEntry = self.sensorLogger.makeEntry(currentIn, currentOut, voltage, lux, relays)
+				self.currentBuf.addElement((currentIn-currentOut)*voltage)
+				self.batteryCur += self.currentBuf.sRule(cfg.cfg["actor.basic.interval"])
+				logEntry = logentry.Entry(currentInReading=currentIn, currentOutReading=currentOut, voltageReading=voltage, luxReading=lux, wattSeconds=self.batteryCur, relayStatus=relays)
 				self.sensorLogger.recordEntry(logEntry)
 				self.act(voltage, lux)
-				time.sleep(1)
+				time.sleep(cfg.cfg["actor.basic.interval"])
 		except KeyboardInterrupt:
 			self.batteryManagerObj.shutdown()
 			self.sensorLogger.fileObj.flush()
-			self.sensorLogger.uploadFile(self.sensorLogger.logFileName)
+			if "sensorlogger.connDetails" in cfg.cfg:
+				self.sensorLogger.uploadFile(self.sensorLogger.logFileName)
 	def checkConfig(self):
-		for key in ["relay.charger","relay.output","action.lux.threshold","action.lux.high","action.lux.low","action.voltage.threshold","action.voltage.high","action.voltage.low"]:
+		for key in ["interval","relay.charge","relay.output","action.lux.threshold","action.lux.high","action.lux.low","action.voltage.threshold","action.voltage.high","action.voltage.low"]:
 			cfg.cfg["actor.basic."+key] #throw key exception if the key isn't found
 	def act(self, voltage, lux):
 		self.actGeneric("voltage", voltage)

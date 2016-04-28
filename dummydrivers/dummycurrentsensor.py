@@ -10,12 +10,12 @@ import logging
 #import sensor abstract
 import abstractsensor
 class CurrentSensor(abstractsensor.Sensor):
-	def __init__(self, bus=1, addr=0x40, shunt=0.1):
+	def __init__(self, bus=1, addr=0x40, shuntCurrent=0.1):
 		self.logger = logging.getLogger("PB.drivers.currentsensor.dummy")
 		self.addr = addr
 		self.bus = bus
-		self.shunt = shunt
-		self.logger.info("Starting with parameters: bus=%i, addr=%x, shunt=%f",self.bus,self.addr,self.shunt)
+		self.shunt = shuntCurrent
+		self.logger.info("Starting with parameters: bus=%i, addr=%x, shuntCurrent=%f",self.bus,self.addr,self.shunt)
 	#returns the current across the shunt
 	def getReading(self):
 		return 5.0-(random.random()*0.5)

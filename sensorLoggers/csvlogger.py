@@ -25,6 +25,10 @@ class Logger(abssensorlogger.Logger):
 	def recordEntry(self, entry):
 		assert type(entry) == logentry.Entry
 		if time.time()-self.lastTime > self.interval:
+			if "sensorlogger.precision" in cfg.cfg:
+				for k in entry.keys():
+					if type(entry[k]) == float:
+							entry[k] = ("{0:."+str(cfg.cfg["sensorlogger.precision"])+"f}").format(entry[k])
 			self.lastTime = time.time()
 			self.logger.debug("Writing %s", repr(entry))
 			self.writer.writerow(entry)
